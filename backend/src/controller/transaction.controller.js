@@ -82,4 +82,63 @@ const getDashboardData = async (req, res) => {
     }
 };
 
-export { addTransaction, getAllTransactions, getDashboardData };
+const updateTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, amount, type, category, description, date } = req.body;
+
+        const transaction = await Transaction.findById(id);
+
+        if (!transaction) {
+            return res.status(404).json({ message: "Transaction not found" });
+        }
+
+        if (transaction.userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: "You are not authorized to update this transaction" });
+        }
+
+        const updatedTransaction = await Transaction.findByIdAndUpdate(
+            id,
+            {
+                title,
+                amount,
+                type,
+                category,
+                description,
+                date
+            },
+            { new: true }
+        );
+
+        return res.status(200).json({ message: "Transaction updated", transaction: updatedTransaction });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+const deleteTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const transaction = await Transaction.findById(id);
+
+        if (!transaction) {
+            return res.status(404).json({ message: "Transaction not found" });
+        }
+
+        // SECURITY CHECK
+        if (transaction.userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: "You are not authorized to delete this transaction" });
+        }
+
+        await transaction.deleteOne();
+
+        return res.status(200).json({ message: "Transaction deleted successfully" });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export { addTransaction, getAllTransactions, getDashboardData, updateTransaction, deleteTransaction };
