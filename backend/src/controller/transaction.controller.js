@@ -32,4 +32,22 @@ const addTransaction = async (req, res) => {
     }
 };
 
-export { addTransaction };
+const getAllTransactions = async (req, res) => {
+    try {
+        const transactions = await Transaction.find({ userId: req.user._id });
+
+        return res.status(200).json({
+            message: "Transactions fetched successfully",
+            count: transactions.length,
+            transactions
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+};
+
+export { addTransaction, getAllTransactions };
