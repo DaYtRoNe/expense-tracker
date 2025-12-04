@@ -60,4 +60,28 @@ const loginUser = async (req, res)=>{
     }
 }
 
-export { registerUser, loginUser };
+const updateUserProfile = async (req, res) => {
+    try {
+        const { username, email } = req.body;
+
+        // Login වෙලා ඉන්න user ගේ ID එක (req.user._id) පාවිච්චි කරලා update කරනවා
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                username,
+                email
+            },
+            { new: true } // අලුත් විස්තර ටික return කරන්න
+        ).select("-password"); // Password එක එළියට යවන්න එපා
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export { registerUser, loginUser, updateUserProfile };
