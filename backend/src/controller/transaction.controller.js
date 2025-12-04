@@ -50,4 +50,36 @@ const getAllTransactions = async (req, res) => {
     }
 };
 
-export { addTransaction, getAllTransactions };
+const getDashboardData = async (req, res) => {
+    try {
+        const transactions = await Transaction.find({ userId: req.user._id });
+
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        transactions.forEach((transaction) => {
+            if (transaction.type === "income") {
+                totalIncome += transaction.amount;
+            } else {
+                totalExpense += transaction.amount;
+            }
+        });
+
+        const balance = totalIncome - totalExpense;
+
+        return res.status(200).json({
+            totalIncome,
+            totalExpense,
+            balance,
+            transactionCount: transactions.length
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+};
+
+export { addTransaction, getAllTransactions, getDashboardData };
