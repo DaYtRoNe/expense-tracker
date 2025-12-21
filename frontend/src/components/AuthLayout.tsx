@@ -13,7 +13,7 @@ const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
             {/* LEFT SIDE */}
             <div className="hidden lg:flex w-1/2 bg-slate-900 relative items-center justify-center p-12 overflow-hidden">
                 
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-slate-900 to-slate-900 z-0" />
+                <div className="absolute inset-0 bg-linear-to-br from-indigo-600/20 via-slate-900 to-slate-900 z-0" />
 
                 
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-20"></div>
