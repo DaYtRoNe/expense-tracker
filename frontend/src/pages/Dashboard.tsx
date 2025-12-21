@@ -6,6 +6,7 @@ import type { DashboardData, Transaction } from '../types'; // Type imports upda
 import toast from 'react-hot-toast';
 import AddTransactionModal from '../components/AddTransactionModal';
 import TransactionCard from '../components/TransactionCard';
+import ExpenseChart from '../components/ExpenseChart';
 
 const Dashboard = () => {
 
@@ -48,12 +49,12 @@ const Dashboard = () => {
         try {
             await deleteTransaction(id);
             toast.success("Transaction deleted");
-            
+
             fetchData();
         } catch (error) {
             toast.error("Failed to delete transaction");
             console.log(error);
-            
+
         }
     };
 
@@ -153,31 +154,50 @@ const Dashboard = () => {
                         </div>
 
                         {/* Transactions List Section */}
-                        <div className="mt-8">
-                            <h3 className="text-xl font-bold text-slate-900 mb-4">Recent Transactions</h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                            {transactions.length === 0 ? (
-                                // Empty State
-                                <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-sm">
-                                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-2xl">
-                                        <FiDollarSign />
+                            {/* Transaction List */}
+                            <div className="lg:col-span-2 space-y-4">
+                                <h3 className="text-xl font-bold text-slate-900">Recent Transactions</h3>
+
+                                {transactions.length === 0 ? (
+                                    <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-sm">
+                                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-2xl">
+                                            <FiDollarSign />
+                                        </div>
+                                        <h3 className="text-lg font-semibold text-slate-900">No transactions yet</h3>
+                                        <p className="text-slate-500 mt-2">Add your first transaction.</p>
                                     </div>
-                                    <h3 className="text-lg font-semibold text-slate-900">No transactions yet</h3>
-                                    <p className="text-slate-500 mt-2">Add your first transaction to get started.</p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {transactions.map((transaction) => (
+                                            <TransactionCard
+                                                key={transaction._id}
+                                                transaction={transaction}
+                                                onDelete={handleDelete}
+                                                onEdit={handleEditTransaction}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Chart Component */}
+                            <div className="lg:col-span-1">
+                                <ExpenseChart transactions={transactions} />
+
+                                <div className="mt-6 bg-indigo-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+                                    <div className="relative z-10">
+                                        <h4 className="font-bold text-lg mb-2">Pro Tip 💡</h4>
+                                        <p className="text-indigo-200 text-sm">
+                                            Try to keep your "Food" expenses under 20% of your total income to save more this month!
+                                        </p>
+                                    </div>
+                                    {/* Decoration Circle */}
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white opacity-10 rounded-full"></div>
                                 </div>
-                            ) : (
-                                // Actual List
-                                <div className="space-y-3">
-                                    {transactions.map((transaction) => (
-                                        <TransactionCard
-                                            key={transaction._id}
-                                            transaction={transaction}
-                                            onDelete={handleDelete}
-                                            onEdit={handleEditTransaction}
-                                        />
-                                    ))}
-                                </div>
-                            )}
+                            </div>
+
                         </div>
                     </>
                 )}
