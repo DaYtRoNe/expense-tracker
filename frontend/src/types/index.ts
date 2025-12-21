@@ -34,3 +34,31 @@ export interface LoginData {
     email: string;
     password: string;
 }
+
+// Dashboard Data
+export interface DashboardData {
+    totalIncome: number;
+    totalExpense: number;
+    balance: number;
+    transactionCount: number;
+}
+
+// Transaction Form Data
+export interface TransactionData{
+    title: string;
+    amount: number;
+    type: 'income' | 'expense' | string;
+    category: string;
+    description: string;
+    date: string |Date;
+}
+
+export interface Transaction {
+    _id: string;
+    title: string;
+    amount: number;
+    type: 'income' | 'expense';
+    date: string;
+    category: string;
+    description?: string;
+}
